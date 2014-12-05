@@ -307,8 +307,8 @@ def validate_auth_mechanism_properties(option, value):
 VALIDATORS = {
     'replicaset': validate_string_or_none,
     'w': validate_int_or_basestring,
-    'wtimeout': validate_integer,
-    'wtimeoutms': validate_integer,
+    'wtimeout': validate_positive_integer_or_none,
+    'wtimeoutms': validate_positive_integer_or_none,
     'fsync': validate_boolean,
     'j': validate_boolean,
     'journal': validate_boolean,
