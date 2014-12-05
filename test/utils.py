@@ -32,7 +32,8 @@ from test import (client_context,
                   db_user,
                   db_pwd,
                   host,
-                  port)
+                  port,
+                  WTIMEOUT)
 from test.version import Version
 
 
@@ -51,26 +52,34 @@ def _connection_string(h, p):
         return _connection_string_noauth(h, p)
 
 
-def single_client_noauth(h=host, p=port, **kwargs):
+def single_client_noauth(h=host, p=port, wtimeout=WTIMEOUT, **kwargs):
     """Make a direct connection. Don't authenticate."""
-    return MongoClient(_connection_string_noauth(h, p), **kwargs)
+    return MongoClient(_connection_string_noauth(h, p),
+                       wtimeout=wtimeout,
+                       **kwargs)
 
 
-def single_client(h=host, p=port, **kwargs):
+def single_client(h=host, p=port, wtimeout=WTIMEOUT, **kwargs):
     """Make a direct connection, and authenticate if necessary."""
-    return MongoClient(_connection_string(h, p), **kwargs)
+    return MongoClient(_connection_string(h, p),
+                       wtimeout=wtimeout,
+                       **kwargs)
 
 
-def rs_client_noauth(h=host, p=port, **kwargs):
+def rs_client_noauth(h=host, p=port, wtimeout=WTIMEOUT, **kwargs):
     """Connect to the replica set. Don't authenticate."""
     return MongoClient(_connection_string_noauth(h, p),
-                       replicaSet=client_context.replica_set_name, **kwargs)
+                       replicaSet=client_context.replica_set_name,
+                       wtimeout=wtimeout,
+                       **kwargs)
 
 
-def rs_client(h=host, p=port, **kwargs):
+def rs_client(h=host, p=port, wtimeout=WTIMEOUT, **kwargs):
     """Connect to the replica set and authenticate if necessary."""
     return MongoClient(_connection_string(h, p),
-                       replicaSet=client_context.replica_set_name, **kwargs)
+                       replicaSet=client_context.replica_set_name,
+                       wtimeout=wtimeout,
+                       **kwargs)
 
 
 def rs_or_single_client_noauth(h=host, p=port, **kwargs):

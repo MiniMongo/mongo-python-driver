@@ -207,7 +207,8 @@ class TestCommon(IntegrationTest):
         self.assertEqual(wc.to_dict(), coll.write_concern)
 
     def test_mongo_client(self):
-        m = rs_or_single_client(w=0)
+        # By default rs_or_single_client sets wtimeout to 30 seconds.
+        m = rs_or_single_client(w=0, wtimeout=None)
         coll = m.pymongo_test.write_concern_test
         coll.drop()
         doc = {"_id": ObjectId()}
@@ -218,7 +219,7 @@ class TestCommon(IntegrationTest):
 
         m = rs_or_single_client()
         coll = m.pymongo_test.write_concern_test
-        self.assertTrue(coll.insert(doc, w=0))
+        self.assertTrue(coll.insert(doc, w=0, wtimeout=None))
         self.assertRaises(OperationFailure, coll.insert, doc)
         self.assertRaises(OperationFailure, coll.insert, doc, w=1)
 
@@ -234,7 +235,7 @@ class TestCommon(IntegrationTest):
         self.assertTrue(coll.insert(doc))
 
         # Equality tests
-        direct = connected(single_client(w=0))
+        direct = connected(single_client(w=0, wtimeout=None))
         self.assertEqual(direct,
                          connected(MongoClient("mongodb://%s/?w=0" % (pair,))))
 

@@ -612,7 +612,8 @@ Bye"""))
 
     def test_unacknowledged(self):
         # w=0 is prohibited.
-        infile = GridIn(rs_or_single_client(w=0).pymongo_test.fs)
+        fs = rs_or_single_client(w=0, wtimeout=None).pymongo_test.fs
+        infile = GridIn(fs)
 
         with self.assertRaises(InvalidOperation):
             infile.write(b'data')

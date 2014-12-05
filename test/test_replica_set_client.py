@@ -130,7 +130,7 @@ class TestReplicaSetClient(TestReplicaSetClientBase):
         # Collection.
         for obj in c, c.pymongo_test, c.pymongo_test.test:
             self.assertEqual(obj.read_preference, ReadPreference.PRIMARY)
-            self.assertEqual(obj.write_concern, {})
+            self.assertEqual(obj.write_concern, c.write_concern)
 
         cursor = c.pymongo_test.test.find()
         self.assertEqual(

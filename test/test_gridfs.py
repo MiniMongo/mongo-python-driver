@@ -432,7 +432,8 @@ class TestGridfs(IntegrationTest):
 
     def test_unacknowledged(self):
         # w=0 is prohibited.
-        fs = gridfs.GridFS(rs_or_single_client(w=0).pymongo_test)
+        collection = rs_or_single_client(w=0, wtimeout=None).pymongo_test
+        fs = gridfs.GridFS(collection)
 
         with self.assertRaises(InvalidOperation):
             fs.put(b'data')

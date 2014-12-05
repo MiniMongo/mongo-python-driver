@@ -53,6 +53,11 @@ port3 = int(os.environ.get("DB_PORT3", 27019))
 db_user = _unicode(os.environ.get("DB_USER", "user"))
 db_pwd = _unicode(os.environ.get("DB_PASSWORD", "password"))
 
+# A test server might start secondaries with short oplogs to speed startup,
+# but risks a secondary becoming unrecoverable and hanging operations that
+# set w=<number of members>. Do all ops with a wtimeout.
+WTIMEOUT = 30000
+
 
 class client_knobs(object):
     def __init__(self, heartbeat_frequency=None, server_wait_time=None):
@@ -102,7 +107,7 @@ class ClientContext(object):
 
         try:
             with client_knobs(server_wait_time=0.1):
-                client = pymongo.MongoClient(host, port)
+                client = pymongo.MongoClient(host, port, wtimeout=WTIMEOUT)
                 client.admin.command('ismaster')  # Can we connect?
 
             self.client = client
@@ -119,7 +124,7 @@ class ClientContext(object):
             if self.replica_set_name:
                 self.is_rs = True
                 self.rs_client = pymongo.MongoClient(
-                    pair, replicaSet=self.replica_set_name)
+                    pair, replicaSet=self.replica_set_name, wtimeout=WTIMEOUT)
 
                 self.nodes = set([partition_node(node)
                                   for node in self.ismaster.get('hosts', [])])
